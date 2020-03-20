@@ -26,6 +26,11 @@ def format_date(date: datetime.date):
     else:
         return date.strftime('%-m/%-d/%y')
 
+    
+from typing import List
+import pandas as pd
+import datetime
+import os
 
 def countries_with_no_deaths_count(date: datetime.date) -> int:
     """
@@ -39,10 +44,36 @@ def countries_with_no_deaths_count(date: datetime.date) -> int:
     :param date: Date object of the date to get the results for
     :return: Number of countries with no deaths but with active cases on a given date as an integer
     """
-    
-    # Your code goes here
-    pass
 
+
+    #date = date.strftime('%-m/%-d/%y')
+    liczba = 0
+    #date=f"{date.month}/{date.day}/{date.year - 2000}"
+    #formatdate=f"{date.month}/{date.day}/{date.year - 2000}"
+    #date=format_date(date)
+    formatdate=format_date(date)
+    brak=dfD[formatdate]
+    przypadki=dfC[formatdate]
+    #date = date.strftime('%-m/%-d/%y').lstrip("0").replace(" 0", " ").replace("/0","/")
+    #brak=dfD.loc[date].values[0]
+    #przypadki=dfC.loc[date].values[0]
+    #liczba = 0
+    for i in range(len(dfC)):
+      if (przypadki.values[i]>0 and brak.values[i]==0):
+        liczba +=1
+    return liczba 
+
+from typing import List
+import pandas as pd
+import datetime
+import os
+
+    url = f"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
+    dfC = pd.read_csv(url, error_bad_lines=False)
+    url = f"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv"
+    dfD = pd.read_csv(url, error_bad_lines=False)
+    url = f"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv"
+    dfR = pd.read_csv(url, error_bad_lines=False)
 
 def more_cured_than_deaths_indices(date: datetime.date) -> List[int]:
     """
@@ -67,5 +98,9 @@ def more_cured_than_deaths_indices(date: datetime.date) -> List[int]:
     :return: A List of integers containing indices of countries which had more cured cases than deaths on a given date
     """
     
-    # Your code goes here
-    pass
+
+    formatdate=f"{date.month}/{date.day}/{date.year - 2000}"
+    #formatdate=format_date(date)
+    proba = np.where(dfD[formatdate] < dfR[formatdate])
+    proba= np.array(proba).tolist()
+    return proba
