@@ -28,9 +28,12 @@ def poland_cases_by_date(day: int, month: int, year: int = 2020) -> int:
     :return: Number of cases on a given date as an integer
     """
     
-    # Your code goes here (remove pass)
-    pass
-
+    url = f"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
+    df = pd.read_csv(url, error_bad_lines=False)
+    data=datetime.date(year,month,day)
+    result = df.loc[df["Country/Region"]=="Poland"][f"{month}/{day}/20"].values[0]
+    return result
+    
 
 def top5_countries_by_date(day: int, month: int, year: int = 2020) -> List[str]:
     """
@@ -48,8 +51,13 @@ def top5_countries_by_date(day: int, month: int, year: int = 2020) -> List[str]:
     :return: A list of strings with the names of the coutires
     """
 
-    # Your code goes here (remove pass)
-    pass
+    url = f"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
+    data = datetime.date(year,month,day)
+    data = data.strftime('%m/%d/%y').lstrip("0").replace(" 0", " ").replace("/0","/")
+    df = pd.read_csv(url, error_bad_lines=False)
+    result = df.groupby(["Country/Region"]).sum()
+    result = result[[data]].sort_values(by=data,ascending=False).head(5).index
+    return list(result)
 
 # Function name is wrong, read the pydoc
 def no_new_cases_count(day: int, month: int, year: int = 2020) -> int:
@@ -69,5 +77,11 @@ def no_new_cases_count(day: int, month: int, year: int = 2020) -> int:
     :return: Number of countries/regions where the count has not changed in a day
     """
     
-    # Your code goes here (remove pass)
-    pass
+    url = f"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
+    df = pd.read_csv(url, error_bad_lines=False)
+    dzis = datetime.date(year,month,day)
+    dzis = dzis.strftime('%m/%d/%y').lstrip("0").replace(" 0", " ").replace("/0","/")
+    getdata = datetime.date(year,month,day)
+    wczoraj = getdata - datetime.timedelta(days=1)
+    wczoraj = wczoraj.strftime('%m/%d/%y').lstrip("0").replace(" 0", " ").replace("/0","/")
+    return len(confirmed_cases.loc[confirmed_cases[dzis]-confirmed_cases[wczoraj]!=0].index)
