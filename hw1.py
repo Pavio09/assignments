@@ -68,6 +68,15 @@ def no_new_cases_count(day: int, month: int, year: int = 2020) -> int:
     :param year: Month to get the countries for as an integer indexed from 1
     :return: Number of countries/regions where the count has not changed in a day
     """
-    
-    # Your code goes here (remove pass)
-    pass
+  url = f"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
+  df = pd.read_csv(url, error_bad_lines=False)
+  dzis = datetime.date(year,month,day)
+  dzis = dzis.strftime('%m/%d/%y').lstrip("0").replace(" 0", " ").replace("/0","/")
+  getdata = datetime.date(year,month,day)
+  wczoraj = getdata - datetime.timedelta(days=1)
+  wczoraj = wczoraj.strftime('%m/%d/%y').lstrip("0").replace(" 0", " ").replace("/0","/")
+  result = len(confirmed_cases.loc[confirmed_cases[dzis]-confirmed_cases[wczoraj]!=0].index)
+  print(result)
+  return
+  
+   
