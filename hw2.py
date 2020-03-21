@@ -40,8 +40,14 @@ def countries_with_no_deaths_count(date: datetime.date) -> int:
     :return: Number of countries with no deaths but with active cases on a given date as an integer
     """
     
-    # Your code goes here
-    pass
+
+    liczba = 0
+    brak=dfD[f"{date.month}/{date.day}/{date.year - 2000}"]
+    przypadki=dfC[f"{date.month}/{date.day}/{date.year - 2000}"]
+    for i in range(459):
+      if (brak.values[i]==0 and przypadki.values[i]>=1):
+        liczba +=1
+    return liczba 
 
 
 def more_cured_than_deaths_indices(date: datetime.date) -> List[int]:
@@ -67,5 +73,8 @@ def more_cured_than_deaths_indices(date: datetime.date) -> List[int]:
     :return: A List of integers containing indices of countries which had more cured cases than deaths on a given date
     """
     
-    # Your code goes here
-    pass
+
+    #dane=f"{date.month}/{date.day}/{date.year - 2000}"
+    dane = format_date(date)
+    proba = dfC.loc[dfD[dane] < dfR[dane]].index
+    return list(proba)
