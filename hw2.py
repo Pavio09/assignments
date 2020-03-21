@@ -26,6 +26,10 @@ def format_date(date: datetime.date):
     else:
         return date.strftime('%-m/%-d/%y')
 
+from typing import List
+import pandas as pd
+import datetime
+import os
 
 def countries_with_no_deaths_count(date: datetime.date) -> int:
     """
@@ -67,5 +71,8 @@ def more_cured_than_deaths_indices(date: datetime.date) -> List[int]:
     :return: A List of integers containing indices of countries which had more cured cases than deaths on a given date
     """
     
-    # Your code goes here
-    pass
+    formatdate=f"{date.month}/{date.day}/{date.year - 2000}"
+    #formatdate=format_date(date)
+    proba = np.where(dfD[formatdate] < dfR[formatdate])
+    proba= np.array(proba).tolist()
+    return proba
